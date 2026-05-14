@@ -39,7 +39,7 @@
 
         stage('Unit Test') {
             steps {
-                sh 'pip install requests --quiet'
+                sh 'pip3 install requests --quiet'
                 sh 'python3 Task1/test_app.py -v'
             }
         }
