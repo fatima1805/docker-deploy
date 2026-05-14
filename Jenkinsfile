@@ -18,14 +18,22 @@ pipeline {
             }
         }
 
-        // Stage 3: Scan the filesystem for vulnerabilities and save results
+        // Stage 3: Run unit tests
+        stage('Unit Test') {
+            steps {
+                sh 'pip install flask --quiet'
+                sh 'python3 -m unittest Task1/test_app.py -v'
+            }
+        }
+
+        // Stage 4: Scan the filesystem for vulnerabilities and save results
         stage('File System Scan') {
             steps {
                 sh 'trivy fs --severity HIGH,CRITICAL -f json -o trivy-fs-results.json .'
             }
         }
 
-        // Stage 4: Build Docker images
+        // Stage 5: Build Docker images
         stage('Build Images') {
             steps {
                 sh 'docker build -t flask-app ./Task1'
@@ -33,7 +41,7 @@ pipeline {
             }
         }
 
-        // Stage 5: Start both containers
+        // Stage 6: Start both containers
         stage('Run Containers') {
             steps {
                 sh 'docker run -d --name flask-app --network my-network flask-app'
